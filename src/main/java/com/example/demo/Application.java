@@ -1,7 +1,11 @@
 package com.example.demo;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 @SpringBootApplication
 public class Application {
@@ -10,4 +14,78 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
+    @Bean
+    CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
+        return args -> {
+            Student Majid = new Student(
+                    "Majid",
+                    "Naderi",
+                    "majidnaderi51@gmail.com",
+                    37);
+//            studentRepository.save(student1);
+
+            Student Majid2 = new Student(
+                    "Majid",
+                    "Naderi",
+                    "majid2naderi51@gmail.com",
+                    39);
+
+            Student Ahmed = new Student(
+                    "Ahmed",
+                    "Ali",
+                    "ahmed.ali@amigoscode.edu",
+                    18
+            );
+
+            System.out.println("Adding maria and ahmed");
+            studentRepository.saveAll(List.of(Majid, Ahmed,Majid2));
+
+            System.out.print("Number of students: ");
+            System.out.println(studentRepository.count());
+
+            studentRepository
+                    .findStudentByEmail("majidnaderi51@gmail.com")
+                    .ifPresentOrElse(
+                            System.out::println,
+                            () -> System.out.println("Student with majid ahmed.ali@amigoscode.edu not found"));
+
+            studentRepository.selectStudentWhereFirstNameAndAgeGreaterOrEqual(
+                    "Majid",
+                    37
+            ).forEach(System.out::println);
+
+
+            studentRepository.selectStudentWhereFirstNameAndAgeGreaterOrEqualNative(
+                    "Maria",
+                    39
+            ).forEach(System.out::println);
+
+            System.out.println("Deleting Maria 2");
+            System.out.println(studentRepository.deleteStudentById(3L));
+
+//            studentRepository
+//                    .findById(2L)
+//                    .ifPresentOrElse(
+//                            System.out::println,
+//                            ()->System.out.println("Student with ID 2 not found")
+//                    );
+//            studentRepository
+//                    .findById(3L)
+//                    .ifPresentOrElse(
+//                            System.out::println,
+//                            ()->System.out.println("Student with ID 3 not found")
+//                    );
+//
+//            System.out.println("Select all students");
+//            List<Student> students = studentRepository.findAll();
+//            students.forEach(System.out::println);
+//
+//            System.out.println("Delete Majid");
+//            studentRepository.deleteById(1L);
+//
+//            System.out.print("Number of students: ");
+//            System.out.println(studentRepository.count());
+
+        };
+    }
 }
