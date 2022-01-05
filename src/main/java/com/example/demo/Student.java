@@ -1,17 +1,16 @@
 package com.example.demo;
 
-
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.SEQUENCE;
+
 @Entity(name = "Student")
 @Table(
         name = "student",
         uniqueConstraints = {
-                @UniqueConstraint(name = "student_email_unique",columnNames = "email")
+                @UniqueConstraint(name = "student_email_unique", columnNames = "email")
         }
 )
 public class Student {
@@ -26,10 +25,9 @@ public class Student {
             strategy = SEQUENCE,
             generator = "student_sequence"
     )
-
-@Column(
-        name = "id"
-)
+    @Column(
+            name = "id"
+    )
     private Long id;
 
     @Column(
@@ -56,6 +54,7 @@ public class Student {
     @Column(
             name = "age",
             nullable = false
+
     )
     private Integer age;
 
@@ -74,6 +73,12 @@ public class Student {
             fetch = FetchType.LAZY
     )
     private List<Book> books = new ArrayList<>();
+
+    @OneToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            mappedBy = "student"
+    )
+    private List<Enrolment> enrolments = new ArrayList<>();
 
     public Student(String firstName,
                    String lastName,
@@ -151,6 +156,20 @@ public class Student {
         return books;
     }
 
+    public List<Enrolment> getEnrolments() {
+        return enrolments;
+    }
+
+    public void addEnrolment(Enrolment enrolment) {
+        if (!enrolments.contains(enrolment)) {
+            enrolments.add(enrolment);
+        }
+    }
+
+    public void removeEnrolment(Enrolment enrolment) {
+        enrolments.remove(enrolment);
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -158,7 +177,7 @@ public class Student {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", age='" + age + '\'' +
+                ", age=" + age +
                 '}';
     }
 }
